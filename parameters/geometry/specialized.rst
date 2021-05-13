@@ -368,13 +368,14 @@ When TOPAS starts to build geometries, you will see the numbers are input proper
 Multi Leaf Collimator
 ~~~~~~~~~~~~~~~~~~~~~
 
-Due to the design variations of Multi Leaf Collimator (MLC) from manufacturers, TOPAS provides a simplified MLC model instead of a generic design. With TOPAS MLC’s minimal set of parameters, users can define various width of each leaf and opening of each leaf.
+TOPAS provides a simple Multi Leaf Collimator (MLC) and a doubly diverging MLC. The simple MLC “TsMultiLeafCollimator” is comprised of rectangular parallelopipeds (six rectangular surfaces, at right angles with each other). 
+The simple TOPAS MLC has a minimal set of parameters to define the width and opening (travel) of each leaf.
 
 .. image:: MLC_1.png
 
 Illustrations for TOPAS MLC dimensions. The user can define an arbitrary number of leaves with different width of each leaf. TOPAS detects leaf collision when it is built and leaves are repositioned by :ref:`time_feature` operations.
 
-Here is a complete set of the parameters for the above TOPAS MLC (see :ref:`example_special_mlc` example)::
+Here is a complete set of the parameters for the simple MLC (see :ref:`example_special_mlc` example)::
 
     # Common parameters: type of geometry, position, and rotation
     s:Ge/MultiLeafCollimatorA/Type = "TsMultiLeafCollimator"
@@ -404,6 +405,32 @@ Here is a complete set of the parameters for the above TOPAS MLC (see :ref:`exam
 
 TOPAS MLC is a specialized geometry and so allows only the reposition of each leaf as a function of time, using :ref:`time_feature` (see :ref:`example_special_mlc_sequence` example).
 
+The doubly diverging MLC “TsDivergingMLC” is comprised of trapezoids. 
+
+ADD FIGURE HERE
+
+The following parameter set fully specifies a pair of MLC banks with doubly diverging leaves, in this case, a symmetric 20 cm x 10 cm field at isocenter collimated by a Siemens Oncor MLC with IEC co-ordinates as in the linac example: 
+s:Ge/ MLC /Parent = "IEC_B" #IEC beam limiting device coordinate system
+s:Ge/MLC/Type = "TsDivergingMLC" #TOPAS component for doubly diverging MLC
+s:Ge/MLC/Material = "G4_W" # MLC leaf material
+d:Ge/MLC/SAD = 100. cm #Distance from nominal source position to isocenter along Zb
+d:Ge/MLC/Pos = 28.26 cm #Distance from nominal source position to upstream surface of MLC along Zb
+d:Ge/MLC/DistanceSource2MLCcenter = Ge/MLC/Pos + Ge/MLC/Thickness_half cm
+d:Ge/MLC/TransZ = Ge/MLC/SAD - Ge/MLC/DistanceSource2MLCcenter cm
+s:Ge/MLC/LeafTravelAxis = "Xb" #MLC travel is along either IEC Xb or Yb
+d:Ge/MLC/MaximumLeafOpen = 20.0 cm #Limit of leaf travel as projected to isocenter
+d:Ge/MLC/Thickness = 7.56 cm #Thickness of each MLC leaf along IEC Zb
+d:Ge/MLC/Thickness_half = 0.5 * Ge/MLC/Thickness cm #Half-thickness of each leaf
+d:Ge/MLC/Length = 20.0 cm #Length of each MLC leaf (in direction of travel)
+# Leaf width (orthogonal to direction of travel)
+dv:Ge/MLC/LeafWidths = 40 5. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 5. cm 
+# Leaf positions in direction of travel, projected to the isocenter plane
+# NegativeFieldSetting is MLC bank with leaves opening in the Xb or Yb negative direction
+dv:Ge/MLC/NegativeFieldSetting = 40 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. -5. -5. -5. -5. -5. -5. -5. -5. -5. -5. -5. -5. -5. -5. -5. -5. -5. -5. -5. -5. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. cm
+# PositiveFieldSetting is MLC bank with leaves opening in the Xb or Yb negative direction
+dv:Ge/MLC/PositiveFieldSetting = 40 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 5. 5. 5. 5. 5. 5. 5. 5. 5. 5. 5. 5. 5. 5. 5. 5. 5. 5. 5. 5. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. cm
+s:Ge/MLC/DrawingStyle = "Solid"
+b:Ge/MLC/PrintInformation = "True"
 
 
 .. _geometry_cad:
